@@ -3,6 +3,7 @@ name = "toy-lca"
 version = "0.1.0"
 description = "Toy matrix LCA used to demonstrate a verification harness for AI-assisted work"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.5.5",

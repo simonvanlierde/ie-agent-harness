@@ -61,4 +61,4 @@ agent cannot reach, such as a CI job from a protected branch.
 
 ## Licence
 
-Not chosen yet.
+MIT. See [LICENSE](LICENSE).
