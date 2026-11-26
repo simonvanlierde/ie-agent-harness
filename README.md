@@ -1,4 +1,4 @@
-# ie-harness-starter
+# ie-agent-harness
 
 A small starter for an agentic harness in industrial ecology (IE): the files that keep an AI coding agent
 honest. It has a toy matrix LCA, a hand-checked golden test, one skill, a commit hook and CI. Reading it takes
