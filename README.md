@@ -46,7 +46,11 @@ You need [uv](https://docs.astral.sh/uv/) and [prek](https://github.com/j178/pre
    hook refuses: a person has to approve changes to the golden tests (`Approved-by:` trailer or
    `GOLDEN_APPROVED=1`). `git commit --no-verify` skips the hook, so CI checks again: a pull request
    that changes `tests/golden/` fails unless one of its commits has an `Approved-by:` trailer. The
-   trailer is a claim anyone can type, so on a shared repo also require a person's review on `main`.
+   trailer is a claim anyone can type, so on a shared repo add a
+   [branch ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets)
+   for `main` that requires a pull request, a review and the `golden-approval` check. CI runs the pull
+   request's own copy of this check, so only a required review stops a pull request that edits the
+   check itself.
 4. Undo your edits (`git restore --staged . && git restore .`).
 
 ## Use it with any agent
