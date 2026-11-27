@@ -23,6 +23,33 @@ The idea is the one on ai4ie.org: check AI-assisted work against something the A
 `src/toy_lca/__init__.py` computes `h = C B A^-1 f` for two processes (electricity, steel) and two emissions
 (CO2, CH4). The numbers are made up. The golden test works out 100 kg of steel by hand: 211.4 kg CO2e.
 
+## Two checks, two blind spots
+
+| Check | What it pins | What it catches | What it cannot catch |
+| --- | --- | --- | --- |
+| Golden test (`tests/golden/`) | one number: 100 kg steel is 211.4 kg CO2e | any change that moves that number, such as a wrong emission, factor or matrix entry | which part is wrong; an error that cancels out at this one demand; a unit error in another unit (it only uses kg) |
+| Mass balance (`mass_imbalance` in `src/toy_lca/__init__.py`) | mass in equals mass out for each process | an emission or waste entry that breaks a process's mass, and it names the process and the kg | a wrong characterisation factor (`C`), a wrong technosphere coefficient (`A`), or two mass errors that cancel |
+
+The balance uses made-up masses per unit of output: raw inputs, product, other waste, plus every emission in
+`B`. The golden test tells you the answer is off. The balance tells you which process is off.
+Neither one proves the model is right. They show it is consistent with two things worked out apart from the code.
+
+## Footprint receipt
+
+`scripts/receipt.py` turns one agent run into one row: date, task, input tokens, output tokens, cost.
+You give the token counts and the prices per million tokens; nothing is hardcoded.
+
+```sh
+uv run python scripts/receipt.py "fix unit bug" 12000 3500 3 15 --csv receipts.csv
+```
+
+There is no energy or CO2 column. Providers do not publish a measured energy figure per run, and an
+estimate from tokens would be a guess dressed as a number. Add one only when you have a source you can read.
+
+## Exercise
+
+[docs/exercise.md](docs/exercise.md) is a proposed two-hour exercise for MSc students built on these checks.
+
 ## Quickstart
 
 ```sh
@@ -52,6 +79,11 @@ You need [uv](https://docs.astral.sh/uv/) and [prek](https://github.com/j178/pre
    request's own copy of this check, so only a required review stops a pull request that edits the
    check itself.
 4. Undo your edits (`git restore --staged . && git restore .`).
+
+Second round, the mass balance: in `B` change the steel CH4 emission from `0.01` to `0.1`, then run
+`uv run pytest`. The golden test fails, and so does the balance test, which says process 1 (steel) is out
+by 0.09 kg. Now change `C` from `28.0` to `2.8` instead: only the golden test fails. The balance still passes,
+because it never looks at `C`. Undo your edits again.
 
 ## Use it with any agent
 

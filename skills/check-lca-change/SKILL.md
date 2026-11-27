@@ -20,8 +20,10 @@ you quote a result.
    process, C has one column per emission, f has one entry per product.
 4. Re-derive one result by hand from the matrices and compare it with the code's
    output. Show the arithmetic.
-5. Report what you checked and what you did not.
+5. Check mass in equals mass out: `mass_imbalance(B, MASS_IN, PRODUCT_KG, WASTE_KG)` is zero for every
+   process. It catches a broken emission or waste entry, not a wrong factor in `C` or `A`.
+6. Report what you checked and what you did not.
 
 ## Output
 
-A short list: tests run, units checked, hand calculation, open doubts.
+A short list: tests run, units checked, hand calculation, mass balance, open doubts.

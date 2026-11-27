@@ -17,3 +17,7 @@ A toy matrix LCA in `src/toy_lca/`: `h = C B A^-1 f`. All data is made up.
 - State the unit of every number you report. Mass is in kg inside the code.
 - Run `uv run ruff check` and `uv run ruff format` before you finish.
 - Say what you did not check.
+- Mass is checked too: `mass_imbalance` must return zeros for the made-up masses in `src/toy_lca/`. If you
+  change an emission in `B`, change the mass data to match, or say why the balance now fails.
+- Report each check separately. The golden test and the balance catch different errors. A pass on both does
+  not cover `C` or `A` beyond the golden number.
