@@ -27,6 +27,13 @@ B = np.array(
 # The CH4 factor is a round teaching number, not a published GWP.
 C = np.array([[1.0, 28.0]])
 
+# Mass data per unit of process output, in kg, for the mass balance check.
+# Processes: electricity (1 kWh), steel (1 kg). Electricity has no mass of its
+# own, so the kWh is not counted as product.
+MASS_IN = np.array([0.7, 3.0])  # raw inputs: fuel and air; ore and coke
+PRODUCT_KG = np.array([0.0, 1.0])
+WASTE_KG = np.array([0.198, 0.99])  # other outputs: exhaust gas; slag
+
 UNIT_TO_KG = {"kg": 1.0, "t": 1000.0}
 
 
@@ -52,3 +59,11 @@ def steel_footprint(amount: float, unit: str = "kg") -> float:
     """kg CO2e for the given mass of steel."""
     f = np.array([0.0, to_kg(amount, unit)])
     return float(impact(A, B, C, f)[0])
+
+
+def mass_imbalance(B, mass_in, product_kg, waste_kg):
+    """Mass in minus mass out per process, in kg per unit of output. Zero if balanced.
+
+    Out is the product, the other waste and every emission in B (all emissions in kg).
+    """
+    return mass_in - (product_kg + waste_kg + np.sum(B, axis=0))
