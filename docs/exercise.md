@@ -8,8 +8,8 @@ to an AI assistant of your choice. No coding skill is needed beyond running the 
 1. **Get a result (20 min).** Give the assistant the toy model (`src/toy_lca/__init__.py`) and ask for the
    footprint of 100 kg of steel, in kg CO2e. Write down its answer and how it got there.
 2. **Check mass in = mass out (20 min).** Run `uv run pytest tests/test_lca.py -k mass`. For one process,
-   add up inputs and outputs by hand from `src/toy_lca/__init__.py` and compare with the test.
-3. **Run the golden test (15 min).** Run `uv run pytest tests/golden`. Read the hand calculation at the
+   add up the masses in and out by hand from `src/toy_lca/__init__.py` (`MASS_IN`, `PRODUCT_KG`, `WASTE_KG` and the emissions in `B`). The sum should match: the test passes when in minus out is zero.
+3. **Run the golden test (15 min).** The golden test compares the code with one number worked out by hand. Run `uv run pytest tests/golden`. Read the hand calculation at the
    top of `tests/golden/test_golden.py`. Does the assistant's answer from step 1 match 211.4?
 4. **Find a planted bug (35 min).** Your instructor gives you a copy of `src/toy_lca/__init__.py` with one
    change, for example a tonne counted as a kilogram, or a swapped factor. Run `uv run pytest`. Find the
@@ -17,7 +17,7 @@ to an AI assistant of your choice. No coding skill is needed beyond running the 
 5. **Write down what the checks cannot catch (20 min).** For each check (golden test, mass balance, unit
    tests), name one error it would miss, and say how you would find it.
 
-Do not edit `tests/golden/`. If you think it is wrong, say so in your hand-in.
+Do not edit `tests/golden/`: the golden test is your reference. If you think it is wrong, say so in your hand-in.
 
 ## Hand-in
 
