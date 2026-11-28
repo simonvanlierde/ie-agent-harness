@@ -116,6 +116,9 @@ Keep that wiring in your own settings, not in this repo. Also keep a second copy
 the agent cannot reach it, such as a CI job on a protected branch. The `GOLDEN_APPROVED=1` switch is only as
 strong as the rule that an agent never sets it.
 
+The guard watches `tests/golden/` only. A new `conftest.py` or a change to `pyproject.toml` can stop the
+golden test from running at all. So CI also runs `tests/golden` on its own, with those settings ignored.
+
 ## Exercise
 
 [docs/exercise.md](docs/exercise.md) is a proposed two-hour exercise for MSc students built on these checks.
