@@ -1,6 +1,8 @@
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 spec = importlib.util.spec_from_file_location(
     "receipt", Path(__file__).parents[1] / "scripts" / "receipt.py"
 )
@@ -21,3 +23,19 @@ def test_csv_gets_header_once(tmp_path):
     lines = f.read_text().splitlines()
     assert lines[0] == "date,task,input_tokens,output_tokens,cost"
     assert len(lines) == 3
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        ["t", "-5", "10", "1", "1"],
+        ["t", "10", "10", "nan", "1"],
+        ["t", "10", "10", "1", "inf"],
+        ["t", "10", "10", "-1", "1"],
+    ],
+)
+def test_refuses_negative_or_non_finite(args, capsys):
+    with pytest.raises(SystemExit) as exit_info:
+        receipt.main(args)
+    assert exit_info.value.code == 2
+    assert "zero or more" in capsys.readouterr().err

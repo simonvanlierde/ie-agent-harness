@@ -1,13 +1,18 @@
 [project]
 name = "toy-lca"
 version = "0.1.0"
-description = "Toy matrix LCA used to demonstrate a verification harness for AI-assisted work"
+description = "Toy matrix LCA with the checks that keep an AI agent's changes honest"
+keywords = ["life cycle assessment", "industrial ecology", "AI agents", "reproducibility", "teaching"]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.5.5",
 ]
+
+[project.urls]
+Repository = "https://github.com/simonvanlierde/ie-agent-harness"
+"Verify AI-assisted work" = "https://ai4ie.org/best-practices/verify/"
 
 [build-system]
 requires = ["uv_build>=0.13.9,<0.14.0"]

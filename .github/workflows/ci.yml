@@ -16,6 +16,8 @@ jobs:
       - run: uv run ruff check
       - run: uv run ruff format --check
       - run: uv run pytest
+      # Run the golden test on its own, so a conftest.py or addopts cannot skip it.
+      - run: uv run pytest --noconftest -o addopts= tests/golden
   golden-approval:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest

@@ -63,3 +63,40 @@ def test_golden_file_moved_out_without_trailer_fails(repo):
     git(repo, "mv", "tests/golden/x", "other/x")
     git(repo, "commit", "-qm", "move golden")
     assert check(repo) == 1
+
+
+def test_unknown_base_fails(repo):
+    result = subprocess.run(
+        ["sh", str(SCRIPT), "deadbeef", "HEAD"], cwd=repo, env=ENV, capture_output=True
+    )
+    assert result.returncode != 0
+
+
+def test_missing_arguments_fail(repo):
+    result = subprocess.run(["sh", str(SCRIPT)], cwd=repo, env=ENV, capture_output=True)
+    assert result.returncode != 0
+
+
+GUARD = Path(__file__).parents[1] / "scripts" / "guard-golden.sh"
+
+
+def guard(repo, message):
+    msg = repo / ".git" / "MSG"
+    msg.write_text(message)
+    env = {k: v for k, v in ENV.items() if k != "GOLDEN_APPROVED"}
+    return subprocess.run(
+        ["sh", str(GUARD), str(msg)], cwd=repo, env=env, capture_output=True
+    ).returncode
+
+
+def test_guard_refuses_staged_golden_change(repo):
+    (repo / "tests" / "golden" / "x").write_text("178.64\n")
+    git(repo, "add", ".")
+    assert guard(repo, "change golden\n") == 1
+    assert guard(repo, "change golden\n\nApproved-by: Ada\n") == 0
+
+
+def test_guard_ignores_other_changes(repo):
+    (repo / "notes").write_text("b\n")
+    git(repo, "add", ".")
+    assert guard(repo, "edit notes\n") == 0

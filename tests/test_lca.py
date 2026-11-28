@@ -41,8 +41,10 @@ def test_bad_shapes_are_refused():
 
 
 def test_mass_balances():
-    assert mass_imbalance(B, MASS_IN, PRODUCT_KG, WASTE_KG) == pytest.approx(
-        0, abs=1e-9
+    gap = mass_imbalance(B, MASS_IN, PRODUCT_KG, WASTE_KG)
+    assert gap == pytest.approx(0, abs=1e-9), (
+        f"mass in minus out, kg per unit: "
+        f"electricity {gap[0]:+.3f}, steel {gap[1]:+.3f}"
     )
 
 
