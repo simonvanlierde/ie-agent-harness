@@ -15,7 +15,7 @@ changed=$(git diff --name-only "$base...$head" -- tests/golden/) || {
 }
 [ -z "$changed" ] && exit 0
 git log --format=%B "$base..$head" | grep -qE '^Approved-by: .+' && exit 0
-echo "Refused: this pull request changes the golden tests:" >&2
+echo "Refused: this pull request changes the reference answer in tests/golden/:" >&2
 echo "$changed" | sed 's/^/  /' >&2
-echo "A person must approve. Add an 'Approved-by: Name' trailer to one of its commits." >&2
+echo "Stop and ask a person. Only they may approve it, with an 'Approved-by: <their name>' line in one of its commits." >&2
 exit 1

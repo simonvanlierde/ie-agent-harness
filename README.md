@@ -79,8 +79,8 @@ Each step plants one error and runs the checks. After each, undo it with
    fails too, because it plants the same error on top of yours.
 4. Now cheat. Make the change from step 2 again. In `tests/golden/test_golden.py`, set `GOLDEN_KG_CO2E` to
    the wrong output, 178.64. Run `git add` on both files, then `git commit`. Ruff and the tests pass, but
-   the golden hook refuses: a person has to approve a change to the golden tests, with an `Approved-by:`
-   line in the commit message or `GOLDEN_APPROVED=1`. Undo with `git restore --staged . && git restore .`.
+   the golden hook refuses and tells you to ask a person. A person approves with an `Approved-by:` line
+   in the commit message, or by setting `GOLDEN_APPROVED=1` for one commit. Undo with `git restore --staged . && git restore .`.
 
 `git commit --no-verify` skips the hook, so CI checks again: a pull request that changes `tests/golden/`
 fails unless one of its commits has an `Approved-by:` line. Anyone can type that line, so on a shared repo
