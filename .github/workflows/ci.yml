@@ -16,3 +16,15 @@ jobs:
       - run: uv run ruff check
       - run: uv run ruff format --check
       - run: uv run pytest
+  golden-approval:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # the PR's commits, to read their trailers
+      - run: scripts/check-golden-approval.sh "$BASE_SHA" "$HEAD_SHA"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}

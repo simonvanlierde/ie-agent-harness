@@ -11,7 +11,7 @@ about 10 minutes. You do not need to write code to follow it.
 | Onboarding document | what the agent reads first | `AGENTS.md` |
 | Protocols | steps it follows on demand | `skills/check-lca-change/SKILL.md` |
 | Calibration | a known answer the code must reproduce | `tests/golden/`, `tests/` |
-| Safety interlock | a check that stops a bad action | `.pre-commit-config.yaml`, `scripts/guard-golden.sh` |
+| Safety interlock | a check that stops a bad action | `.pre-commit-config.yaml`, `scripts/guard-golden.sh`, `scripts/check-golden-approval.sh` |
 | Lab audit | the same checks on every push | `.github/workflows/ci.yml` |
 
 The idea is the one on ai4ie.org: check AI-assisted work against something the AI could not change. See
@@ -44,7 +44,13 @@ You need [uv](https://docs.astral.sh/uv/) and [prek](https://github.com/j178/pre
 3. Now try the cheat: keep the wrong CH4 factor, set `GOLDEN_KG_CO2E` in `tests/golden/test_golden.py` to the
    wrong output (178.64), `git add` both files and run `git commit`. Ruff and pytest pass, but the golden
    hook refuses: a person has to approve changes to the golden tests (`Approved-by:` trailer or
-   `GOLDEN_APPROVED=1`).
+   `GOLDEN_APPROVED=1`). `git commit --no-verify` skips the hook, so CI checks again: a pull request
+   that changes `tests/golden/` fails unless one of its commits has an `Approved-by:` trailer. The
+   trailer is a claim anyone can type, so on a shared repo add a
+   [branch ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets)
+   for `main` that requires a pull request, a review and the `golden-approval` check. CI runs the pull
+   request's own copy of this check, so only a required review stops a pull request that edits the
+   check itself.
 4. Undo your edits (`git restore --staged . && git restore .`).
 
 ## Use it with any agent
