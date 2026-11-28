@@ -93,8 +93,10 @@ itself.
 ## Footprint receipt
 
 `scripts/receipt.py` turns one agent run into one row: date, task, input tokens, output tokens, cost. A token
-is the unit of text a model reads or writes, and providers bill by it. You give the token counts and the
-prices per million tokens. The script has no prices of its own.
+is the unit of text a model reads or writes, and providers bill by it. You give the token counts (your agent tool
+or provider's usage page shows them) and the prices per million tokens. The script has no prices of its own.
+It does not price cached tokens, which most agent runs use and which cost less than input. If your run used
+a cache, take the cost from your provider's own report.
 
 ```sh
 uv run python scripts/receipt.py "fix unit bug" 12000 3500 3 15 --csv receipts.csv
