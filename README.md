@@ -75,7 +75,8 @@ Each step plants one error and runs the checks. After each, undo it with
 2. Change the CH4 factor in `C` from `28.0` to `2.8`. Only the golden test fails. It says it expected 211.4
    kg CO2e. The mass balance passes, because it never looks at `C`.
 3. Change the steel CH4 emission in `B` from `0.01` to `0.1`. The golden test fails, and so do both
-   mass-balance tests. One says process 1 (steel) is out by 0.09 kg.
+   mass-balance tests. The first says `steel -0.090`: steel puts out 0.09 kg more than goes in. The second
+   fails too, because it plants the same error on top of yours.
 4. Now cheat. Make the change from step 2 again. In `tests/golden/test_golden.py`, set `GOLDEN_KG_CO2E` to
    the wrong output, 178.64. Run `git add` on both files, then `git commit`. Ruff and the tests pass, but
    the golden hook refuses: a person has to approve a change to the golden tests, with an `Approved-by:`
