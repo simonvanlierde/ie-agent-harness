@@ -1,7 +1,18 @@
 import numpy as np
 import pytest
 
-from toy_lca import A, B, C, impact, steel_footprint, to_kg
+from toy_lca import (
+    MASS_IN,
+    PRODUCT_KG,
+    WASTE_KG,
+    A,
+    B,
+    C,
+    impact,
+    mass_imbalance,
+    steel_footprint,
+    to_kg,
+)
 
 
 def test_kg_and_tonnes_agree():
@@ -27,3 +38,18 @@ def test_matrix_shapes_chain():
 def test_bad_shapes_are_refused():
     with pytest.raises(ValueError, match="shapes do not chain"):
         impact(A, B, C, np.array([1.0, 2.0, 3.0]))
+
+
+def test_mass_balances():
+    assert mass_imbalance(B, MASS_IN, PRODUCT_KG, WASTE_KG) == pytest.approx(
+        0, abs=1e-9
+    )
+
+
+def test_mass_balance_names_the_broken_process():
+    # Planted error: steel's CH4 emission is 10 times too high.
+    bad_B = B.copy()
+    bad_B[1, 1] *= 10
+    gap = mass_imbalance(bad_B, MASS_IN, PRODUCT_KG, WASTE_KG)
+    assert gap[0] == pytest.approx(0, abs=1e-9)
+    assert gap[1] == pytest.approx(-0.09)
